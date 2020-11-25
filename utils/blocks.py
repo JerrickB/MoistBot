@@ -37,13 +37,17 @@ class StdUpsample(nn.Module):
             return self.bn(F.relu(self.conv(x)))
 
 class StdLinear(nn.Module):
-    def __init__(self, nin, nout, relu=True):
+    def __init__(self, nin, nout, act='relu'):
         super().__init__()
         self.lin = nn.Linear(nin, nout)
-        self.relu = relu
+        self.act = act
     def forward(self, x):
-        if self.relu: return F.relu(self.lin(x))
-        return self.lin(x)
+        if self.act == 'relu':
+            return F.relu(self.lin(x))
+        elif self.act == 'tanh':
+            return torch.tanh(self.lin(x))
+        else:
+            return self.lin(x)
     
 class DenseBlock(nn.Module):
     def __init__(self, nin, nout, kern=1, stri=1, pad=0):
